@@ -103,7 +103,6 @@ const TextConvertor = () => {
     toast.success("Text downloaded successfully!")
   }
 
-  // Function to count words in the input text
   const countWords = (text: string) => {
     return text.split(/\s+/).filter((word) => word !== "").length
   }
