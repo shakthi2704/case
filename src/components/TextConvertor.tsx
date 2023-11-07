@@ -7,7 +7,6 @@ import { toast } from "react-toastify"
 const TextConvertor = () => {
   const [inputText, setInputText] = useState("")
   const [convertedText, setConvertedText] = useState("")
-  const [selectedCase, setSelectedCase] = useState("none")
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.target.value)
@@ -23,11 +22,9 @@ const TextConvertor = () => {
     switch (caseType) {
       case "uppercase":
         setConvertedText(inputText.toUpperCase())
-        setSelectedCase("uppercase")
         break
       case "lowercase":
         setConvertedText(inputText.toLowerCase())
-        setSelectedCase("lowercase")
         break
       case "titlecase":
         setConvertedText(
@@ -37,7 +34,6 @@ const TextConvertor = () => {
             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(" ")
         )
-        setSelectedCase("titlecase")
         break
       case "sentencecase":
         setConvertedText(
@@ -49,7 +45,6 @@ const TextConvertor = () => {
             )
             .join(". ")
         )
-        setSelectedCase("sentencecase")
         break
       case "alternatingcase":
         setConvertedText(
@@ -60,7 +55,6 @@ const TextConvertor = () => {
             )
             .join("")
         )
-        setSelectedCase("alternatingcase")
         break
       case "inversecase":
         setConvertedText(
@@ -73,26 +67,25 @@ const TextConvertor = () => {
             )
             .join("")
         )
-        setSelectedCase("inversecase")
         break
       default:
         setConvertedText("")
-        setSelectedCase("none")
     }
   }
+
   const handleCopyToClipboard = () => {
     if (!isInputEmpty) {
       navigator.clipboard.writeText(convertedText).then(() => {
-        // alert("Text copied to clipboard!")
         toast.success("Text copied to clipboard!")
       })
     }
   }
+
   const handleClear = () => {
     setInputText("")
     setConvertedText("")
-    setSelectedCase("none")
   }
+
   const handleDownload = () => {
     const blob = new Blob([convertedText], { type: "text/plain" })
     const url = URL.createObjectURL(blob)
