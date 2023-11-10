@@ -4,6 +4,10 @@ export const mainMenu = [
     link: "#",
     subMenu: [
       {
+        name: "Case Converter",
+        slug: "Case-Converter",
+      },
+      {
         name: "Bold Text Generator",
         slug: "bold-text-generator",
       },

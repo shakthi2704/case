@@ -1,111 +1,30 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+import TextStats from "./TextStats"
+import Loader from "./Loader"
 import ClearButton from "./buttons/ClearButton"
 import CopyButton from "./buttons/CopyButton"
 import DownloadButton from "./buttons/DownloadButton"
-import { toast } from "react-toastify"
 
 const TextConvertor = () => {
+  const [isLoading, setIsLoading] = useState(true)
   const [inputText, setInputText] = useState("")
-  const [convertedText, setConvertedText] = useState("")
+  const [convertedText] = useState("")
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.target.value)
   }
 
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 2000)
+  }, [])
+
   const isInputEmpty = inputText.trim() === ""
 
-  const convertText = (caseType: string) => {
-    if (isInputEmpty) {
-      return
-    }
-
-    switch (caseType) {
-      case "uppercase":
-        setConvertedText(inputText.toUpperCase())
-        break
-      case "lowercase":
-        setConvertedText(inputText.toLowerCase())
-        break
-      case "titlecase":
-        setConvertedText(
-          inputText
-            .toLowerCase()
-            .split(" ")
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(" ")
-        )
-        break
-      case "sentencecase":
-        setConvertedText(
-          inputText
-            .toLowerCase()
-            .split(". ")
-            .map(
-              (sentence) => sentence.charAt(0).toUpperCase() + sentence.slice(1)
-            )
-            .join(". ")
-        )
-        break
-      case "alternatingcase":
-        setConvertedText(
-          inputText
-            .split("")
-            .map((char, index) =>
-              index % 2 === 0 ? char.toLowerCase() : char.toUpperCase()
-            )
-            .join("")
-        )
-        break
-      case "inversecase":
-        setConvertedText(
-          inputText
-            .split("")
-            .map((char) =>
-              char === char.toUpperCase()
-                ? char.toLowerCase()
-                : char.toUpperCase()
-            )
-            .join("")
-        )
-        break
-      default:
-        setConvertedText("")
-    }
-  }
-
-  const handleCopyToClipboard = () => {
-    if (!isInputEmpty) {
-      navigator.clipboard.writeText(convertedText).then(() => {
-        toast.success("Text copied to clipboard!")
-      })
-    }
-  }
-
-  const handleClear = () => {
-    setInputText("")
-    setConvertedText("")
-  }
-
-  const handleDownload = () => {
-    const blob = new Blob([convertedText], { type: "text/plain" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = "transformed-text.txt"
-    a.click()
-    toast.success("Text downloaded successfully!")
-  }
-
-  const countWords = (text: string) => {
-    return text.split(/\s+/).filter((word) => word !== "").length
-  }
-
-  // Function to count lines in the input text
-  const countLines = (text: string) => {
-    return text.split(/\r\n|\r|\n/).filter((line) => line !== "").length
-  }
-
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <div className="mt-10">
       <div className="mx-4 md:px-10 flex flex-col space-y-4 md:flex-row md:space-x-10 md:space-y-0">
         <textarea
@@ -129,92 +48,63 @@ const TextConvertor = () => {
                 ? "bg-gray-400 text-black cursor-not-allowed"
                 : "bg-gray-600 text-white hover:bg-slate-700"
             }`}
-            onClick={() => convertText("uppercase")}
-            disabled={isInputEmpty}
           >
-            Uppercase
+            Sentense Case
           </button>
           <button
-            className={`text-xs p-2 m-2 border rounded-md md:text-sm md:py-1 hover-bg-slate-700 ${
+            className={`text-xs p-2 m-2 border rounded-md md:text-sm md:py-1 hover:bg-slate-700 ${
               isInputEmpty
-                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                : "bg-gray-600 text-white hover-bg-slate-700"
+                ? "bg-gray-400 text-black cursor-not-allowed"
+                : "bg-gray-600 text-white hover:bg-slate-700"
             }`}
-            onClick={() => convertText("lowercase")}
-            disabled={isInputEmpty}
           >
-            Lowercase
+            Upper case
           </button>
           <button
-            className={`text-xs p-2 m-2 border rounded-md md:text-sm md:py-1 hover-bg-slate-700 ${
+            className={`text-xs p-2 m-2 border rounded-md md:text-sm md:py-1 hover:bg-slate-700 ${
               isInputEmpty
-                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                : "bg-gray-600 text-white hover-bg-slate-700"
+                ? "bg-gray-400 text-black cursor-not-allowed"
+                : "bg-gray-600 text-white hover:bg-slate-700"
             }`}
-            onClick={() => convertText("titlecase")}
-            disabled={isInputEmpty}
+          >
+            Lower case
+          </button>
+          <button
+            className={`text-xs p-2 m-2 border rounded-md md:text-sm md:py-1 hover:bg-slate-700 ${
+              isInputEmpty
+                ? "bg-gray-400 text-black cursor-not-allowed"
+                : "bg-gray-600 text-white hover:bg-slate-700"
+            }`}
           >
             Title Case
           </button>
           <button
-            className={`text-xs p-2 m-2 border rounded-md md:text-sm md:py-1 hover-bg-slate-700 ${
+            className={`text-xs p-2 m-2 border rounded-md md:text-sm md:py-1 hover:bg-slate-700 ${
               isInputEmpty
-                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                : "bg-gray-600 text-white hover-bg-slate-700"
+                ? "bg-gray-400 text-black cursor-not-allowed"
+                : "bg-gray-600 text-white hover:bg-slate-700"
             }`}
-            onClick={() => convertText("sentencecase")}
-            disabled={isInputEmpty}
-          >
-            Sentence Case
-          </button>
-          <button
-            className={`text-xs p-2 m-2 border rounded-md md:text-sm md:py-1 hover-bg-slate-700 ${
-              isInputEmpty
-                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                : "bg-gray-600 text-white"
-            }`}
-            onClick={() => convertText("alternatingcase")}
-            disabled={isInputEmpty}
           >
             Alternating Case
           </button>
           <button
-            className={`text-xs p-2 m-2 border rounded-md md:text-sm md:py-1 hover-bg-slate-700 ${
+            className={`text-xs p-2 m-2 border rounded-md md:text-sm md:py-1 hover:bg-slate-700 ${
               isInputEmpty
-                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                : "bg-gray-600 text-white"
+                ? "bg-gray-400 text-black cursor-not-allowed"
+                : "bg-gray-600 text-white hover:bg-slate-700"
             }`}
-            onClick={() => convertText("inversecase")}
-            disabled={isInputEmpty}
           >
             Inverse Case
           </button>
         </div>
 
         <div className="container flex flex-col gap-2 md:flex-row md:gap-0 justify-center">
-          <CopyButton
-            handleCopyToClipboard={handleCopyToClipboard}
-            disabled={isInputEmpty}
-          />
-          <DownloadButton
-            handleDownload={handleDownload}
-            disabled={isInputEmpty}
-          />
-          <ClearButton handleClear={handleClear} disabled={isInputEmpty} />
+          <DownloadButton />
+          <CopyButton />
+          <ClearButton />
         </div>
       </div>
-
-      <div className="container">
-        <p>
-          Total Words: <b>{countWords(inputText)}</b>
-        </p>
-        <p>
-          Total Characters: <b>{inputText.length}</b>
-        </p>
-        <p>
-          Total Lines: <b>{countLines(inputText)}</b>
-        </p>
-      </div>
+      <TextStats inputText={inputText} />
     </div>
   )
 }
