@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css"
 
 const App = () => {
   return (
-    <div className="bg-gray-900 text-white h-screen overflow-hidden">
+    <div className="bg-gray-900 text-white min-h-screen overflow-hidden">
       <Navbar />
       <Outlet />
       <Footer />
